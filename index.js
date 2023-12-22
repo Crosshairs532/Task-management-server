@@ -33,6 +33,20 @@ DBConnect();
 const taskUsers = client.db('Task').collection('taskUsers');
 
 
+app.get('/users', async (req, res) => {
+    const result = await taskUsers.find().toArray();
+
+})
+app.post('/users', async (req, res) => {
+    const user = req.body;
+    const exist = await taskUsers.findOne({ email: user.email })
+    if (exist) {
+        return res.send({ message: "another user has same email " });
+    }
+    const result = await taskUsers.insertOne(user);
+    res.send(result);
+})
+
 
 
 
