@@ -31,12 +31,23 @@ DBConnect();
 
 
 const taskUsers = client.db('Task').collection('taskUsers');
+const allTask = client.db('Task').collection('allTask');
 
 
 app.get('/users', async (req, res) => {
     const result = await taskUsers.find().toArray();
 
 })
+app.get('/task', async (req, res) => {
+    const { email } = req?.query;
+    console.log(email);
+    const result = await allTask.find({ userEmail: email }).toArray();
+    console.log(result);
+    res.send(result);
+})
+// start
+
+
 app.post('/users', async (req, res) => {
     const user = req.body;
     const exist = await taskUsers.findOne({ email: user.email })
@@ -46,6 +57,13 @@ app.post('/users', async (req, res) => {
     const result = await taskUsers.insertOne(user);
     res.send(result);
 })
+app.post('/task', async (req, res) => {
+    const task = req?.body || "not given";
+    const result = await allTask.insertOne(task);
+    res.send(result);
+
+})
+
 
 
 
