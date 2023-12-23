@@ -3,7 +3,7 @@ const cors = require('cors')
 const port = process.env.PORT || 3000;
 require('dotenv').config()
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_User}:${process.env.DB_Password}@cluster0.wtx9jbs.mongodb.net/?retryWrites=true&w=majority`;
 app.use(cors())
 app.use(express.json())
@@ -46,8 +46,6 @@ app.get('/task', async (req, res) => {
     res.send(result);
 })
 // start
-
-
 app.post('/users', async (req, res) => {
     const user = req.body;
     const exist = await taskUsers.findOne({ email: user.email })
@@ -62,6 +60,31 @@ app.post('/task', async (req, res) => {
     const result = await allTask.insertOne(task);
     res.send(result);
 
+})
+
+app.patch('/task', async (req, res) => {
+    const { id } = req.query;
+    const updatedData = req.body;
+    const filter = { _id: new ObjectId(id) }
+    const up = {
+        $set: {
+            TaskName: updatedData.TaskName,
+            priority: updatedData.priority,
+            description: updatedData.description,
+            data: updatedData.date,
+
+        }
+    }
+    const result = await allTask.updateOne(filter, up);
+    res.send(result)
+})
+
+app.delete('/task', async (req, res) => {
+    const { id } = req.query;
+    console.log(id);
+    const filter = { _id: new ObjectId(id) }
+    const result = await allTask.deleteOne(filter);
+    res.send(result)
 })
 
 
