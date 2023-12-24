@@ -33,15 +33,18 @@ DBConnect();
 const taskUsers = client.db('Task').collection('taskUsers');
 const allTask = client.db('Task').collection('allTask');
 
-
 app.get('/users', async (req, res) => {
     const result = await taskUsers.find().toArray();
-
+    res.send(result);
 })
 app.get('/task', async (req, res) => {
     const { email } = req?.query;
     console.log(email);
-    const result = await allTask.find({ userEmail: email }).toArray();
+    let query = {}
+    if (email) {
+        query.userEmail = email;
+    }
+    const result = await allTask.find(query).toArray();
     console.log(result);
     res.send(result);
 })
