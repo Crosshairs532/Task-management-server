@@ -82,6 +82,21 @@ app.patch('/task', async (req, res) => {
     res.send(result)
 })
 
+app.patch('/task/status', async (req, res) => {
+    const { id } = req.query;
+    const status = req.body;
+    console.log(status, id, 'upppppppp');
+    const up = {
+        $set: {
+            status: status.status
+        }
+    }
+    const filter = { _id: new ObjectId(id) }
+    const result = await allTask.updateOne(filter, up);
+    res.send(result)
+
+})
+
 app.delete('/task', async (req, res) => {
     const { id } = req.query;
     console.log(id);
